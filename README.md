@@ -80,4 +80,4 @@ The [Wiki](https://github.com/Anish-Agnihotri/algosearch/wiki) is currently unde
 # License
 [![License](https://img.shields.io/badge/License-Apache%202.0-yellowgreen.svg)](https://opensource.org/licenses/Apache-2.0)
 
-Copyright (C) 2020, Anish Agnihotri.
+Copyright (C) 2020, Anish Agnihotri.# algosearch-master
