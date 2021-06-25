@@ -1,109 +1,42 @@
 /*
-	transactions.js
+	Query: addresses.js
 	____________
-	Provides transactions endpoint.
-	________________________
-	Various return schemas
+	Addresses endpoint
+	____________
+	Various Return schemas
 */
 
 var constants = require('../global'); // Require global constants
-const nano = require("nano")(`http://${constants.dbuser}:${constants.dbpass}@${constants.dbhost}`); // Connect nano to db
-var axios = require('axios'); // Require axios
+const axios = require("axios"); // Axios for requests
 
-// Export app routes
-module.exports = function(app) {
 
-	// --> Return single transaction information
-	app.get('/transactionservice/:txid', function(req, res) {
-		const txid = req.params.txid; // Get txid from address
+const algosdk = require('algosdk');
+const indexer_token = "";
+const indexer_server = "http://localhost";
+const indexer_port = 8980;
+let indexerClient = new algosdk.Indexer(indexer_token, indexer_server, indexer_port);
 
-		axios({
-			method: 'get',
-			url: `${constants.algodurl}/transaction/${txid}`, // Request transaction details endpoint
-			headers: {'X-Algo-API-Token': constants.algodapi}
-		}).then(response => {
-			let result = response.data; // Store response in result
+// Instantiate the indexer client wrapper
 
-			axios({
-				method: 'get',
-				url: `${constants.algodurl}/block/${result.round}`,
-				headers: {'X-Algo-API-Token': constants.algodapi}
-			}).then(resp => {
-				result.timestamp = resp.data.timestamp; // Add timestamp to result JSON
-				res.send(result);
-			}).catch(error => {
-				res.status(501);
-				console.log("Exception when querying blocks endpoint for timestamp: " + error);
-			})
-		}).catch(error => {
-			res.status(501);
-			console.log("Exception when getting transaction details " + error);
-		})
-	});
+	// Get address from url
 
-	// --> Return all transaction data for a single address
-	app.get('/all/addresstx/:address', function(req, res) {
-		var address = req.params.address; // Get address from request
+	module.exports = function(app) {
 
-		axios({
-			method: 'get',
-			url: `${constants.algodurl}/account/${address}/transactions?max=100000000`, // Set arbitrary unlimited max (0 doesn't work)
-			headers: {'X-Algo-API-Token': constants.algodapi}
-		}).then(response => {
-			res.send(response.data.transactions); // Return transaction data as response
-		}).catch(error => {
-			res.status(501);
-			console.log("Exception when retrieving all transactions for an address: " + error);
-		})
-	});
+		app.get('/transactionservice/:txid', function(req, res) {
 
-	// --> Return paginated transaction data
-	app.get('/all/transactions/:lastTransaction/:limit/:full', function(req, res) {
-		var lastTransaction = parseInt(req.params.lastTransaction); // Pagination handler
-		var limit = parseInt(req.params.limit); // Limit (max: 100)
-		const showFull = parseInt(req.params.full) === 0 ? false : true; // If 0, truncated data (save bandwidth), else full response
+(async () => {
+	let txid = req.params.txid; // Get txid from address
+	
+    let response = await indexerClient.searchForTransactions()
+        .txid(txid)
+        .do();
+		res.send(response.data);
+    console.log("Information for Transaction search: " + JSON.stringify(response, undefined, 2));
+    }   
+)().catch(e => {
+    console.log(e);
+    console.trace();
+	res.status(501);
+});
 
-		// If limit > 100, reset to 100.
-		if (limit > 100) {
-			limit = 100;
-		}
-
-		// If limit > lastTransaction, return all
-		if (limit > lastTransaction) {
-			limit = lastTransaction;
-		}
-
-		nano.db.get('transactions').then(getresponse => {
-			// Query transactions database (skipping all transactions till lastTransaction), and limiting query to limit items
-			nano.db.use('transactions').view('query', 'bytimestamp', {include_docs: true, descending: true, skip: lastTransaction - limit, limit: limit}).then(body => {
-				let transaction = [];
-
-				for (let i = body.rows.length - 1; i >= 0; i--) {
-					if (showFull) {
-						// If showFull = 1, return all data
-						transaction.push(body.rows[i]);
-					} else {
-						// If showFull = 0, return truncated data (for tables and low bandwidth usage)
-						transaction.push({
-							"round": body.rows[i].doc.round,
-							"type": body.rows[i].doc.type,
-							"tx": body.rows[i].doc.tx,
-							"from": body.rows[i].doc.from,
-							"to": body.rows[i].doc.payment.to,
-							"amount": parseInt(body.rows[i].doc.payment.amount)/1000000,
-							"fee": parseInt(body.rows[i].doc.fee)/1000000,
-						});
-					}
-				}
-
-				res.send({"total_transactions": getresponse.doc_count, "transactions": transaction.reverse()});
-			}).catch(error => {
-				res.status(501);
-				console.log("Exception when listing all blocks: " + error);
-			})
-		}).catch(error => {
-			res.status(501);
-			console.log("Exception when retrieving total transactions count: " + error);
-		})
-    });
-}
+	})}
