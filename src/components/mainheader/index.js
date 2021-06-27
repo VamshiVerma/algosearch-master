@@ -39,6 +39,8 @@ class MainHeader extends React.Component {
 							<li><NavLink to="/" exact>Home</NavLink></li>
 							<li><NavLink to="/blocks">Blocks</NavLink></li>
 							<li><NavLink to="/transactions">Transactions</NavLink></li>
+							<li><NavLink to="/assets">Assets</NavLink></li>
+
 							<li><NavLink to="/dev">Developer APIs</NavLink></li>
 						</ul>
 					</nav>
@@ -60,6 +62,8 @@ class MainHeader extends React.Component {
 							<li><NavLink to="/" exact>Home</NavLink></li>
 							<li><NavLink to="/blocks">Blocks</NavLink></li>
 							<li><NavLink to="/transactions">Transactions</NavLink></li>
+							<li><NavLink to="/assets">assets</NavLink></li>
+
 							<li><NavLink to="/dev">Developer APIs</NavLink></li>
 						</ul>
 					</nav>

@@ -25,6 +25,9 @@ class HeaderSearch extends React.Component {
 				case 'transaction':
 					this.props.history.push(`/tx/${search}`);
 					break;
+					case 'asset':
+						this.props.history.push(`/as/${search}`);
+						break;
 				case 'address':
 					this.props.history.push(`/address/${search}`);
 					break;

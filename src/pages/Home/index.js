@@ -19,6 +19,7 @@ class Home extends React.Component {
 		this.state = {
 			blocks: [],
 			transactions: [],
+			assets: [],
 			loading: true
 		}
 	}
@@ -28,7 +29,7 @@ class Home extends React.Component {
 			url: `${siteName}/latest`
 		}).then(response => {
 			const synced = Math.ceil(response.data.blocks[0].round/100)*100 === Math.ceil(response.data.ledger.round/100)*100 ? true : false;
-			this.setState({blocks: response.data.blocks, transactions: response.data.transactions, ledger: response.data.ledger, synced: synced, loading: false});
+			this.setState({blocks: response.data.blocks, transactions: response.data.transactions,assets: response.data.assets, ledger: response.data.ledger, synced: synced, loading: false});
 		}).catch(error => {
 			console.log("Error when retrieving latest statistics: " + error);
 		})
@@ -69,6 +70,16 @@ class Home extends React.Component {
 			{Header: 'Time', accessor: 'timestamp', Cell: props => <span className="nocolor">{moment.unix(props.value).fromNow()}</span>}
 		];
 		const transaction_columns_id = {id: "home-latest-transaction-sizing"};
+
+		const asset_columns = [
+			{Header: 'ID', accessor: 'ID', Cell: props => <NavLink to={`/tx/${props.value}`}>{props.value}</NavLink>}, 
+			{Header: 'Name', accessor: 'Name',  Cell: props => <NavLink to={`/address/${props.value}`}>{props.value}</NavLink>},
+			{Header: 'Unit', accessor: 'Unit',  Cell: props => <NavLink to={`/address/${props.value}`}>{props.value}</NavLink>}, 
+			{Header: 'URL', accessor: 'URL', Cell: props => <span>{<span className="nocolor">{formatValue(props.value / 1000000)}</span>} <AlgoIcon /></span>},
+			{Header: 'Creator', accessor: 'Creator', Cell: props => <span className="nocolor">{moment.unix(props.value).fromNow()}</span>}
+		];
+		const asset_columns_id = {id: "home-latest-asset-sizing"};
+
 
 		return (
 			<Layout synced={this.state.synced} homepage>
@@ -132,6 +143,24 @@ class Home extends React.Component {
 									sortable={false}
 									className="transactions-table"
 									getProps={() => transaction_columns_id}
+								/>
+							</div>
+						</div>
+					</div>
+
+					<div>
+						<div className="block-table assets-table">
+							<span>Latest blocks <NavLink to="/assets" className="viewmore">View more</NavLink></span>
+							<div>
+								<ReactTable
+									data={this.state.blocks}
+									columns={asset_columns}
+									loading={this.state.loading}
+									defaultPageSize={10}
+									showPagination={false}
+									sortable={false}
+									className="transactions-table"
+									getProps={() => asset_columns_id}
 								/>
 							</div>
 						</div>

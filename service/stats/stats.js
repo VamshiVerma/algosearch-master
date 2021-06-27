@@ -79,7 +79,21 @@ module.exports = function(app) {
 						transactions.push(tbody.rows[i].doc);
 					}
 
-					res.send({"blocks": blocks, "transactions": transactions, "ledger": lbody.data});
+					
+				nano.db.use('assets').view('query', 'bytimestamp', {include_docs: true, descending: true, limit: 10}).then(tbody => {
+					let assets = [];
+
+					for (let i = 0; i < tbody.rows.length; i++) {
+						assets.push(tbody.rows[i].doc);
+					}
+
+
+
+					res.send({"blocks": blocks, "transactions": transactions, "assets":assets, "ledger": lbody.data});
+				}).catch(error => {
+					res.status(501);
+					console.log("Exception when querying latest 10 assets: " + error);
+				});
 				}).catch(error => {
 					res.status(501);
 					console.log("Exception when querying latest 10 transactions: " + error);

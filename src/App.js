@@ -11,6 +11,8 @@ import Transaction from './pages/Transaction';
 import Transactions from './pages/Transactions';
 import Dev from './pages/Dev';
 import FourOhFour from './pages/404';
+import Asset from './pages/Asset';
+import Assets from './pages/Assets';
 
 function App() {
   return (
@@ -24,7 +26,9 @@ function App() {
           <Route path="/blocks" exact component={Blocks} />
           <Route path="/block/:blocknum" component={props => <Block {...props} key={Math.ceil(Math.random() * 10)}/>} />
           <Route path="/transactions" exact component={Transactions} />
+          <Route path="/assets" exact component={Assets} />
           <Route path="/tx/:txid" component={Transaction} />
+          <Route path="/as/:asid" component={Asset} />
           <Route path="/dev" exact component={Dev} />
           <Route path="/404" exact component={FourOhFour} />
           <Route component={Home} />
