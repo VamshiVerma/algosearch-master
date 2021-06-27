@@ -24,6 +24,9 @@ require('./service/query/blocks')(app);
 // --> /all/addresstx/:address
 require('./service/query/transactions')(app);
 
+require('./service/query/assets')(app);
+
+
 // --> /addressservice/:address
 require('./service/query/addresses')(app);
 

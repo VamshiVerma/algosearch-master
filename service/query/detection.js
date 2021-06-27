@@ -44,7 +44,19 @@ module.exports = function(app) {
 				}).catch(error => {
 					res.send('error');
 					console.log("Exception: cannot detect parsed string: ", error);
-				})
+				}).catch(() => {
+					axios({
+						method: 'get',
+						url: `${constants.algodurl}/asset/${string}`,
+						headers: {'X-Algo-API-Token': constants.algodapi}
+					}).then(assetresp => {
+						if (assetresp.data.as.toString() === string) {
+							res.send('asset');
+						} else {
+							res.send('error');
+							console.log("Exception: false asset formatting");
+						}
+					})
 			})
 		})
 	});

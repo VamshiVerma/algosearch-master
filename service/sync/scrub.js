@@ -35,8 +35,26 @@ async function transactions() {
 	}
 }
 
+async function assets() {
+	for (let i = 0; i < 200; i++) {
+		await nano.db.use('assets').view('ID', {descending: true, limit: 100, include_docs: true}).then(async body => {
+			for (let i = 0; i < body.rows.length; i++) {
+				if (body.rows[i].doc.round > 6086500) {
+					await nano.db.use('assets').destroy(body.rows[i].id, body.rows[i].doc._rev).then(async () => {
+							console.log('Deleted assets in block: ' + body.rows[i].doc.round);
+					}).catch(async error => {
+							console.log(error);
+					});
+				}
+			}
+		})
+	}
+}
+
 async function run() {
 	await transactions();
+	await assets();
+
 }
 
 run();

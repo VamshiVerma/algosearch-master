@@ -12,6 +12,14 @@
 	text-align: left;
 }
 
+.home-split > div {
+	display: inline-block;
+	width: 49%;
+	padding-top: 20px;
+	vertical-align: top;
+	text-align: left;
+}
+
 .home-split > div:nth-child(1) {
 	margin-right: 1%;
 }
@@ -20,6 +28,9 @@
 	margin-left: 1%;
 }
 
+.home-split > div:nth-child(3) {
+	margin-left: 1%;
+}
 .home-cards {
 	transform: translateY(0px) !important;
 	margin-top: 20px;
@@ -87,3 +98,28 @@
 	min-width: 120px !important;
 	max-width: 120px !important;
 } 
+
+#home-latest-block-sizing > div:nth-child(1) > div, #home-latest-transaction-sizing > div:nth-child(1) > div {
+	min-width: 420px !important;
+}
+
+/* Table sizing --> blocks */
+#home-latest-asset-sizing > div > .rt-thead > div > div:nth-child(1), #home-latest-asset-sizing > div > .rt-tbody > div > div > div:nth-child(1) {
+	min-width: 100px !important;
+	max-width: 100px !important;
+} 
+
+#home-latest-asset-sizing > div > .rt-thead > div > div:nth-child(2), #home-latest-asset-sizing > div > .rt-tbody > div > div > div:nth-child(2) {
+	min-width: 100px !important;
+	max-width: calc(100% - 320px) !important;
+} 
+
+#home-latest-asset-sizing > div > .rt-thead > div > div:nth-child(3), #home-latest-asset-sizing > div > .rt-tbody > div > div > div:nth-child(3) {
+	min-width: 70px !important;
+	max-width: 70px !important;
+} 
+
+#home-latest-asset-sizing > div > .rt-thead > div > div:nth-child(4), #home-latest-asset-sizing > div > .rt-tbody > div > div > div:nth-child(4) {
+	min-width: 150px !important;
+	max-width: 150px !important;
+}

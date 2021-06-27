@@ -45,6 +45,22 @@ const initTransactionsDB = () => {
 	})
 }
 
+
+const initAssetsDB = () => {
+	console.log("Checking for assets database");
+
+	nano.db.list().then(body => {
+		if (!body.includes('assets')) {
+			console.log("assets database does not exist, creating...");
+			nano.db.create('assets');
+		} else {
+			console.log("assets database exists, continuing...");
+		}
+	}).catch(error => {
+		console.log("Exception when initializing assets DB: " + error);
+	})
+}
+
 /*
 	Check for addresses database
 	If it exists, continue. Else, create it.
@@ -68,10 +84,13 @@ const initAddressesDB = () => {
 initBlocksDB();
 initTransactionsDB();
 initAddressesDB();
+initAssetsDB();
+
 
 // Export functions
 module.exports = {
 	initBlocksDB: initBlocksDB,
 	initTransactionsDB: initTransactionsDB,
-	initAddressesDB: initAddressesDB
+	initAddressesDB: initAddressesDB,
+	initAssetsDB: initAssetsDB
 };
